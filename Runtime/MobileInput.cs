@@ -63,7 +63,7 @@ namespace Mopsicus.Plugins {
     }
 
     /// <summary>
-    /// Mobile native input plugin
+    /// Mobile native input plugin :)
     /// </summary>
     public class MobileInput : MonoBehaviour, IPlugin {
 
