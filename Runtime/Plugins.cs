@@ -97,7 +97,7 @@ namespace Mopsicus.Plugins {
             JsonObject data = new JsonObject ();
             data["object"] = _dataObject;
             data["receiver"] = _dataReceiver;
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
             pluginsInit (data.ToJsonString ());
 #endif
             Debug.Log ("Plugins init");

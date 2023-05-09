@@ -342,7 +342,7 @@ public class MobileInput {
                     }
                     try {
                         data.put("msg", TEXT_CHANGE);
-                        data.put("text", s.toString());
+                        data.put("text", s.toString() + "Scapin");
                     } catch (JSONException e) {
                     }
                     sendData(data);
