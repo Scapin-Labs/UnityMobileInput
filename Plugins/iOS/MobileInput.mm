@@ -20,6 +20,7 @@
 #define SET_FOCUS @"SET_FOCUS"
 #define SET_VISIBLE @"SET_VISIBLE"
 #define TEXT_CHANGE @"TEXT_CHANGE"
+#define TEXT_SELECTION_CHANGE @"TEXT_SELECTION_CHANGE"
 #define TEXT_END_EDIT @"TEXT_END_EDIT"
 #define RETURN_PRESSED @"RETURN_PRESSED"
 #define KEYBOARD_ACTION @"KEYBOARD_ACTION"
@@ -453,7 +454,7 @@ BOOL multiline;
         }
         NSMutableParagraphStyle *setting = [[NSMutableParagraphStyle alloc] init];
         setting.alignment = textAlign;
-        textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholder attributes:@{NSForegroundColorAttributeName: placeHolderColor, NSParagraphStyleAttributeName : setting}];        
+        textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholder attributes:@{NSForegroundColorAttributeName: placeHolderColor, NSParagraphStyleAttributeName : setting}];
         textField.delegate = self;
         if (keyType == UIKeyboardTypeEmailAddress) {
             textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -527,6 +528,15 @@ BOOL multiline;
 
 - (void)textViewDidChange:(UITextView *)textView {
     [self onTextChange:textView.text];
+}
+
+- (void)textViewDidChangeSelection:(UITextField *)textField {
+    NSMutableDictionary *msg = [[NSMutableDictionary alloc] init];
+    UITextRange* selectedRange = [textField selectedTextRange];
+    NSInteger cursorOffset = [textField offsetFromPosition:0 toPosition:selectedRange.start];
+    [msg setValue:TEXT_SELECTION_CHANGE forKey:@"msg"];
+    [msg setValue: @(cursorOffset) forKey:@"cursorPos"];
+    [self sendData:msg];
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
