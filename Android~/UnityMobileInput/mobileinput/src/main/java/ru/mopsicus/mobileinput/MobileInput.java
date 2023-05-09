@@ -42,6 +42,8 @@ public class MobileInput {
     private static final String ANDROID_KEY_DOWN = "ANDROID_KEY_DOWN";
     private static final String RETURN_PRESSED = "RETURN_PRESSED";
     private static final String READY = "READY";
+    private static final String TEXT_SELECTION_CHANGE = "TEXT_SELECTION_CHANGE";
+ 
     private EditText edit;
     private int id;
     private final RelativeLayout layout;
@@ -109,6 +111,24 @@ public class MobileInput {
         } catch (JSONException e) {
             Plugin.common.sendError(Plugin.name, "PROCESS_ERROR", e.getMessage());
         }
+    }
+    
+    private class SelectableEditText extends EditText {
+        public SelectableEditText(android.content.Context context) {
+            super(context);
+        }
+         @Override 
+         protected void onSelectionChanged(int selStart, int selEnd) {
+            super();
+            JSONObject data = new JSONObject();
+            Debug.LogInfo (string.Format ("Selection changed" + selStart + ", " + selEnd));
+            try {
+                data.put("msg", TEXT_SELECTION_CHANGE);
+                data.put("cursorPos", selStart);
+                data.put("selectionEnd", selEnd);
+            } catch (JSONException e) {}
+            sendData(data);
+         }
     }
 
     // Create new MobileInput
@@ -338,6 +358,7 @@ public class MobileInput {
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     // TODO Auto-generated method stub
                 }
+                
             });
             edit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
@@ -354,7 +375,7 @@ public class MobileInput {
                     return false;
                 }
             });
-
+            
             layout.addView(edit);
             data = new JSONObject();
             try {
