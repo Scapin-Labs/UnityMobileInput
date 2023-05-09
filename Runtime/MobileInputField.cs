@@ -142,6 +142,11 @@ namespace Mopsicus.Plugins {
         /// Set text to InputField
         /// </summary>
         const string SET_TEXT = "SET_TEXT";
+        
+        /// <summary>
+        /// Set text to InputField
+        /// </summary>
+        const string TEXT_SELECTION_CHANGE = "TEXT_SELECTION_CHANGE";
 
         /// <summary>
         /// Set new Rect, position, size
