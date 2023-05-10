@@ -30,9 +30,6 @@ public class KeyboardListener implements KeyboardObserver {
             common.sendData(Plugin.name, json.toString());
         }
     }
-    
-    @Override
-    public void on
 
 }
 

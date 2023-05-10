@@ -26,6 +26,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
+import androidx.appcompat.widget.AppCompatEditText;
 
 public class MobileInput {
 
@@ -113,15 +114,14 @@ public class MobileInput {
         }
     }
     
-    private class SelectableEditText extends EditText {
+    private class SelectableEditText extends AppCompatEditText {
         public SelectableEditText(android.content.Context context) {
             super(context);
         }
          @Override 
          protected void onSelectionChanged(int selStart, int selEnd) {
-            super();
+            super.onSelectionChanged(selStart, selEnd);
             JSONObject data = new JSONObject();
-            Debug.LogInfo (string.Format ("Selection changed" + selStart + ", " + selEnd));
             try {
                 data.put("msg", TEXT_SELECTION_CHANGE);
                 data.put("cursorPos", selStart);
