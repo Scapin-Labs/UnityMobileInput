@@ -288,6 +288,12 @@ namespace Mopsicus.Plugins {
             }
         }
 
+        public void SetText(string text, int cursorPos)
+        {
+            _inputObject.text = text;
+            SetTextNative (value, cursorPos);
+        }
+
         /// <summary>
         /// Initialization coroutine
         /// </summary>
@@ -440,6 +446,16 @@ namespace Mopsicus.Plugins {
             string msg = data["msg"];
             if (msg.Equals (TEXT_CHANGE)) {
                 string text = data["text"];
+                if(data.ContainsKey("cursorPos"))
+                {
+                    Log.Debug("got caret pos in data: " + data["cursorPos"]);
+                    int cursorPos = data["cursorPos"];
+                    this.OnSelectionChange(cursorPos);
+                }
+                else
+                {
+                    Log.Debug("got no caret pos in data");
+                }
                 this.OnTextChange (text);
             } else if (msg.Equals (READY)) {
                 this.Ready ();
@@ -542,10 +558,14 @@ namespace Mopsicus.Plugins {
         /// Set text to field
         /// </summary>
         /// <param name="text">New text</param>
-        void SetTextNative (string text) {
+        void SetTextNative (string text, int cursorPos = -1) {
             JsonObject data = new JsonObject ();
             data["msg"] = SET_TEXT;
             data["text"] = text;
+            if (cursorPos >= 0)
+            {
+                data["cursorPos"] = cursorPos;    
+            }
             this.Execute (data);
         }
         

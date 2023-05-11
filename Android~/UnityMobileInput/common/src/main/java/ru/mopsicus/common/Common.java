@@ -17,6 +17,7 @@ public class Common {
 
     // Send data in JSON format to Unity
     public void sendData(String plugin, String data) {
+        System.out.println ("Common sendData: [" + plugin + "]: " + data);
         JSONObject info = new JSONObject();
         try {
             info.put("name", plugin);

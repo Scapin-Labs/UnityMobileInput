@@ -26,7 +26,6 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
-import androidx.appcompat.widget.AppCompatEditText;
 
 public class MobileInput {
 
@@ -91,6 +90,12 @@ public class MobileInput {
                 case SET_TEXT:
                     String text = data.getString("text");
                     this.SetText(text);
+                    if(data.has("cursorPos")){
+                        int cursorPos = data.getInt("cursorPos");
+                        this.SetCursor(cursorPos);
+                    } else {
+                        this.SetCursor(text.length());
+                    }
                     break;
                 case SET_RECT:
                     this.SetRect(data);
@@ -112,23 +117,6 @@ public class MobileInput {
         } catch (JSONException e) {
             Plugin.common.sendError(Plugin.name, "PROCESS_ERROR", e.getMessage());
         }
-    }
-    
-    private class SelectableEditText extends AppCompatEditText {
-        public SelectableEditText(android.content.Context context) {
-            super(context);
-        }
-         @Override 
-         protected void onSelectionChanged(int selStart, int selEnd) {
-            super.onSelectionChanged(selStart, selEnd);
-            JSONObject data = new JSONObject();
-            try {
-                data.put("msg", TEXT_SELECTION_CHANGE);
-                data.put("cursorPos", selStart);
-                data.put("selectionEnd", selEnd);
-            } catch (JSONException e) {}
-            sendData(data);
-         }
     }
 
     // Create new MobileInput
@@ -342,7 +330,8 @@ public class MobileInput {
                     }
                     try {
                         data.put("msg", TEXT_CHANGE);
-                        data.put("text", s.toString() + "Scapin");
+                        data.put("text", s.toString());
+                        data.put("cursorPos", edit.getSelectionStart());
                     } catch (JSONException e) {
                     }
                     sendData(data);
@@ -356,7 +345,15 @@ public class MobileInput {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    // TODO Auto-generated method stub
+                    /*
+                    JSONObject data = new JSONObject();
+                    try {
+                        data.put("msg", TEXT_SELECTION_CHANGE);
+                        data.put("cursorPos", start+before);
+                    } catch (JSONException e) {
+                    }
+                    sendData(data);
+                    */
                 }
                 
             });
@@ -399,6 +396,13 @@ public class MobileInput {
     private void SetText(String newText) {
         if (edit != null) {
             edit.setText(newText);
+        }
+    }
+    
+    // Set new text
+    private void SetCursor(int cursorPos) {
+        if (edit != null) {
+            edit.setSelection(cursorPos);
         }
     }
 
