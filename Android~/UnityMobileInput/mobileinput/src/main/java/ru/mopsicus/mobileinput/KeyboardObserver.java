@@ -7,7 +7,7 @@
 package ru.mopsicus.mobileinput;
 
 public interface KeyboardObserver {
-    void onKeyboardHeight(float height, int keyboardHeight, int orientation);
+    void onKeyboardHeight(float height, int keyboardHeight, int orientation, int keyboardHeight2);
 }
 
 

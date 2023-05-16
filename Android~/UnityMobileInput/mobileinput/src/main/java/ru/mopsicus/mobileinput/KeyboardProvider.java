@@ -24,6 +24,7 @@ import android.view.Display;
 import android.view.Window;
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.os.Build;
 
 public class KeyboardProvider extends PopupWindow {
 
@@ -36,6 +37,7 @@ public class KeyboardProvider extends PopupWindow {
 
     // Constructor
     public KeyboardProvider(Activity activity, ViewGroup parent, KeyboardObserver listener) {
+        
         super(activity);
         this.observer = listener;
         this.activity = activity;
@@ -47,6 +49,7 @@ public class KeyboardProvider extends PopupWindow {
         setContentView(popupView);
         setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+        
         parentView = parent;
         setWidth(0);
         setHeight(WindowManager.LayoutParams.MATCH_PARENT);
@@ -63,6 +66,7 @@ public class KeyboardProvider extends PopupWindow {
                 }
             }
         });
+
     }
 
     // Close fake popup
@@ -80,7 +84,53 @@ public class KeyboardProvider extends PopupWindow {
 
     // Handler to get keyboard height
     private void handleOnGlobalLayout() {
+   
+        Point screenSize = new Point();
+        activity.getWindowManager().getDefaultDisplay().getSize(screenSize);
+    
+        Rect rect = new Rect();
+        popupView.getWindowVisibleDisplayFrame(rect);
+    
+        // REMIND, you may like to change this using the fullscreen size of the phone
+        // and also using the status bar and navigation bar heights of the phone to calculate
+        // the keyboard height. But this worked fine on a Nexus.
+        int orientation = getScreenOrientation();
+        int keyboardHeight = screenSize.y - (rect.bottom - rect.top);
+        
+        if (keyboardHeight == 0) {
+            notifyKeyboardHeight(0, 0, orientation);
+        }
+        else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            //this.keyboardPortraitHeight = keyboardHeight; 
+            //notifyKeyboardHeightChanged(keyboardPortraitHeight, orientation);
+            
+                   Rect r = new Rect();
+                   View rootview = activity.getWindow().getDecorView(); // this = activity
+                   rootview.getWindowVisibleDisplayFrame(r);
+            
+            notifyKeyboardHeight(r.top-r.bottom, keyboardHeight, orientation);
+        } 
+        else {
+            this.keyboardLandscapeHeight = keyboardHeight; 
+            //notifyKeyboardHeightChanged(keyboardLandscapeHeight, orientation);
+        }
+        
+        
+        
+        
+        // WORKING SOLUTION ABOVE!
 
+/*
+        Rect r = new Rect();
+        parent.getWindowVisibleDisplayFrame(r);
+
+        int screenHeight = parent.getRootView().getHeight();
+        int heightDifference = screenHeight - (r.bottom - r.top);
+        Log.d("Keyboard Size", "Size: " + heightDifference);
+*/
+/*
+		Point screenSize = new Point();
+                activity.getWindowManager().getDefaultDisplay().getSize(screenSize);
 		Rect rect = new Rect();
         popupView.getWindowVisibleDisplayFrame(rect);
         if (rect.bottom > heightMax) {
@@ -92,7 +142,9 @@ public class KeyboardProvider extends PopupWindow {
         	keyboardHeight += navBarHeight;
         }
         int orientation = getScreenOrientation();
-        notifyKeyboardHeight(keyboardHeight, keyboardHeight, orientation);
+        
+        notifyKeyboardHeight(screenSize.y, keyboardHeight, orientation);
+        */
     }
 
     private int getNavigationBarHeight() {
@@ -128,9 +180,9 @@ public class KeyboardProvider extends PopupWindow {
 	}
 
     // Send data observer
-    private void notifyKeyboardHeight(float height, int keyboardHeight, int orientation) {
-        if (observer != null) {
-            observer.onKeyboardHeight(height, keyboardHeight, orientation);
+    private void notifyKeyboardHeight(float rawHeight, int heightWithoutBottom, int orientation) {
+        if (observer != null) { 
+            observer.onKeyboardHeight(rawHeight, heightWithoutBottom, orientation, navBarHeight);
         }
     }
 }

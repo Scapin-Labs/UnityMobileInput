@@ -17,13 +17,17 @@ public class KeyboardListener implements KeyboardObserver {
     private Common common = new Common();
 
     @Override
-    public void onKeyboardHeight(float height, int keyboardHeight, int orientation) {
+    public void onKeyboardHeight(float height, int keyboardHeight, int orientation, int keyboardHeight2) {
         boolean isShow = (keyboardHeight > 0);
         JSONObject json = new JSONObject();
+        
         try {
             json.put("msg", Plugin.KEYBOARD_ACTION);
             json.put("show", isShow);
             json.put("height", height);
+            json.put("keyboard_height_without_bottom", keyboardHeight);
+            json.put("keyboard_bottom", keyboardHeight2);
+            json.put("orientation", orientation);
         } catch (JSONException e) {}
         if (isPreviousState != isShow) {
             isPreviousState = isShow;

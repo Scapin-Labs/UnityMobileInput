@@ -385,8 +385,7 @@ namespace Mopsicus.Plugins {
             _config.PlaceholderColor = placeHolder.color;
             _config.CharacterLimit = _inputObject.characterLimit;
             Rect rect = GetScreenRectFromRectTransform (this._inputObjectText.rectTransform);
-            float ratio = rect.height / _inputObjectText.rectTransform.rect.height;
-            _config.FontSize = ((float) _inputObjectText.fontSize) * ratio;
+            _config.FontSize = ((float) _inputObjectText.fontSize);
             _config.TextColor = _inputObjectText.color;
             _config.Align = _inputObjectText.alignment.ToString ();
             _config.ContentType = _inputObject.contentType.ToString ();

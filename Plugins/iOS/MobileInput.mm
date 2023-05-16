@@ -395,7 +395,7 @@ BOOL multiline;
     } else if ([returnKeyTypeString isEqualToString:@"Send"]) {
         returnKeyType = UIReturnKeySend;
     }
-    fontSize = fontSize / [UIScreen mainScreen].scale;
+    //fontSize = fontSize / [UIScreen mainScreen].scale;
     UIFont *uiFont = [UIFont systemFontOfSize:fontSize];
     if (![customFont isEqualToString:@"default"]) {
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -413,6 +413,7 @@ BOOL multiline;
     if (multiline) {
         PlaceholderTextView *textView = [[PlaceholderTextView alloc] initWithFrame:CGRectMake(x, y, width, height)];
         textView.keyboardType = keyType;
+        textView.inputAccessoryView =
         [textView setFont:uiFont];
         textView.scrollEnabled = TRUE;
         textView.delegate = self;

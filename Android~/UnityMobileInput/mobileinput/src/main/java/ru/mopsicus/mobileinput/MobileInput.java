@@ -6,6 +6,7 @@
 
 package ru.mopsicus.mobileinput;
 
+import android.os.Build;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -15,6 +16,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
+import android.util.DisplayMetrics;
+import android.content.Context;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -286,10 +289,12 @@ public class MobileInput {
             }
             edit.setImeOptions(imeOptions);
             edit.setGravity(gravity);
-            edit.setTextSize(TypedValue.COMPLEX_UNIT_PX, (float) fontSize);
-            edit.setTextColor(Color.argb(textColor_a, textColor_r, textColor_g, textColor_b));
+            
+            edit.setTextColor(Color.argb(textColor_a, textColor_r, textColor_g, textColor_b)); 
             edit.setBackgroundColor(Color.argb(backColor_a, backColor_r, backColor_g, backColor_b));
             edit.setHintTextColor(Color.argb(placeHolderColor_a, placeHolderColor_r, placeHolderColor_g, placeHolderColor_b));
+           
+           
             if (!customFont.equals("default")) {
                 try {
                     Typeface face = Typeface.createFromAsset(Plugin.activity.getAssets(), String.format("%s.ttf", customFont));
@@ -300,6 +305,11 @@ public class MobileInput {
             } else {
                 edit.setTypeface(Typeface.SANS_SERIF);
             }
+
+            edit.setTextSize((float)fontSize);
+            Log.d("MobileInput", "TextSize: " + fontSize);
+            Log.d("MobileInput", "TextFont: " + edit.getTypeface().toString());            
+            
             final MobileInput input = this;
             edit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -444,7 +454,9 @@ public class MobileInput {
             }
         }
         this.showKeyboard(isFocus);
+ 
     }
+   
 
     // Set new position and size
     private void SetRect(JSONObject data) {
@@ -510,8 +522,9 @@ public class MobileInput {
     private void showKeyboard(boolean isShow) {
         InputMethodManager imm = (InputMethodManager) Plugin.activity.getSystemService(Plugin.activity.INPUT_METHOD_SERVICE);
         View rootView = Plugin.activity.getWindow().getDecorView();
+        
         if (isShow) {
-            imm.showSoftInput(edit, InputMethodManager.SHOW_FORCED);
+            imm.showSoftInput(edit, 0);
         } else {
             edit.clearFocus();
             rootView.clearFocus();
